@@ -55,17 +55,17 @@ exports.getAlbums = function(req, res){
     request.get(options,function(error, response, body) {
       if(!error & response.statusCode == 200){
         var data = JSON.stringify(body);
+        //console.log('data', data);
         res.json(JSON.parse(data))
       }
     })           
 }
 
 exports.getTracks = function(req, res){
-    console.log("reached getTracks")
-    var album = req.body.album;
     var albumId = req.body.albumId;
+    console.log("reached getTracks for AlbumId:", albumId)
 
-    console.log("req.body.access_token", req.body.access_token);
+    //console.log("req.body.access_token", req.body.access_token);
     var access_token  = req.body.access_token;//req.headers.authorization.split("Bearer ")[1];
 
 
@@ -76,16 +76,16 @@ exports.getTracks = function(req, res){
     };
 
     request.get(options,function(error, response, body) {
+      if(error){
+        console.log(' error getting tracks', error)
+      }
       if(!error & response.statusCode == 200){
+       // console.log('body', body);
         var data = JSON.stringify(body);
         res.json(JSON.parse(data))
       }
     })           
 }
-
-
-
-
 
 
 

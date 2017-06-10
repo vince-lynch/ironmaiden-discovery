@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div id="app">
     <hello></hello>
   </div>
@@ -14,4 +14,3 @@ export default {
   }
 }
 </script>
- -->

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "My app description",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha --timeout 10000"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -22,7 +23,15 @@
     "querystring": "^0.2.0",
     "request": "^2.69.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "jasmine-core": "^2.6.3",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-jasmine": "^1.1.0",
+    "mocha": "^2.4.5"
+  },
   "engines": {
     "node": "6.1.0"
   }

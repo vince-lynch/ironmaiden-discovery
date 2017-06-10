@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div id="hello">
     <img src="http://vuejs.org/images/logo.png">
     <h1>{{ msg }}</h1>
@@ -58,4 +58,4 @@ a {
   color: #42b983;
 }
 </style>
- -->
+ 

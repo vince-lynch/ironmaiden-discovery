@@ -575,6 +575,98 @@ div.view-more-detail em{
   font-size: 18px;
 }
 
+#spotifyModal{
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  top: 0px;
+  z-index: 2;
+  display: block;
+}
+
+#spotifyModal #white-Card {
+    background: white;
+    width: 296px;
+    height: 150px;
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+}
+
+#spotifyModal #white-Card .show-header-text{
+  font-size: 34px;
+  color: white;
+  font-weight: 600;
+  margin-top: -65px;
+  margin-left: 54px;
+  position: absolute;
+}
+
+#spotifyModal #white-Card div.show-image{
+  width: 100%;
+  height: 36vh;
+  background-position-y: center;
+  background-size: cover; 
+  opacity: 0.8;
+}
+
+
+.button {
+  width: auto;
+  display: inline-block;
+  padding: 0 18px 0 6px;
+  border: 0 none;
+  border-radius: 5px;
+  text-decoration: none;
+  -webkit-transition: all 250ms linear;
+  transition: all 250ms linear;
+}
+.button:hover {
+  text-decoration: none;
+}
+
+.button--social-login {
+  margin-bottom: 12px;
+  margin-right: 12px;
+  color: white;
+  height: 50px;
+  line-height: 46px;
+  position: relative;
+  text-align: left;
+}
+.button--social-login .icon {
+  margin-right: 12px;
+  font-size: 24px;
+  line-height: 24px;
+  width: 42px;
+  height: 24px;
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  top: 4px;
+}
+.button--social-login .icon:before {
+  display: inline-block;
+  width: 40px;
+}
+.button--social-login .icon:after {
+  content: "";
+}
+.button--spotify {
+  background-color: #2EBD59;
+  border: 1px solid #249446;
+}
+.button--spotify .icon {
+  border-right: 1px solid #249446;
+}
+.button--spotify .icon:after {
+  border-right: 1px solid #4bd374;
+}
+.button--spotify:hover {
+  background-color: #29a84f;
+}
 
 #showModal{
   position: fixed;

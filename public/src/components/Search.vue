@@ -1,10 +1,10 @@
 
 <template>
   <div id="intro">
-	<h1>Music App</h1>
+  	
 	<!-- access_token: {{access_token}} -->
-	<input type="text" class="form-control" v-model="searchText" placeholder="Search for..." />
-	<button v-on:click="doSearch(searchText)" class="btn btn-primary">Search</button>
+	<input id="searchinput" type="text" class="form-control" v-model="searchText" placeholder="Search for..." />
+	<button id="searchSubmit" v-on:click="doSearch(searchText)" class="btn btn-primary">Search</button>
 
 
    <div id="results" style="">
@@ -73,6 +73,15 @@
 	</div>
 
 
+	<div id="spotifyModal" v-if="spotifyModal == true" >
+		  <div id="white-Card">
+		  	<h1 style="color: black;">Login with Spotify</h1>
+			<a class="button button--social-login button--spotify" @click="authenticate('oauth2')"><i class="icon fa fa-spotify"></i>Login With Spotify</a>
+
+
+		  </div>
+	</div>
+
   </div>
 
 </template>
@@ -91,7 +100,8 @@ export default {
 		  musicListLoaded: this.musicListLoaded,
 		  selectedAlbum: this.selectedAlbum,
 		  showModal: this.showModal,
-		  foundTracks: this.foundTracks
+		  foundTracks: this.foundTracks,
+		  spotifyModal: this.spotifyModal
 		}
 	},
 	mounted() {
@@ -100,22 +110,38 @@ export default {
 	  this.selectedAlbum   = [];
 	  this.showModal 	   = false;
 	  this.foundTracks     = [];
+	  this.spotifyModal    = false;
 	  // When the application loads, we want to call the method that initializes
 	  // some data
 	  //return 
 	  console.log("[home -> vue.ready()]")
 	  this.fetchEvents();
-	  this.testReq();
+	  //this.testReq();
 
 	  this.redirectLogin();
 	},
 	methods: {
 		redirectLogin: function(){
 			console.log('redirectLogin called()', window.location.href);
-			if(window.location.href == "https://app6.vincelynch.com/"){
-				 window.location= "https://accounts.spotify.com/authorize?response_type=code&client_id=caec1db59c614765bb0a7009122d1c17&redirect_uri=https://app6.vincelynch.com/auth/spotify&scope=user-top-read&scope=user-top-read";
+
+			if(window.location.href == "https://app6.vincelynch.com/"|| window.location.href == 'http://localhost:9876/context.html'){
+				// Open spotify modal 
+				this.spotifyModal = true; // prompt user to login
+
+				// In Testing Mode
+				if(window.testing_access_token != undefined){ // use this access token in Karma Testing Modes
+					console.log('use this access token in Karma Testing Modes: ', window.testing_access_token);
+					this.access_token = window.testing_access_token;
+					window.access_token = this.access_token;
+				}
 			} else {
+				console.log('reached else');
+				this.spotifyModal = false;
+
 				this.access_token = window.location.href.split('access_token=')[1];
+				window.access_token = this.access_token; // for karma-testing
+
+				console.log('saved access token', this.access_token);
 				this.$http.headers.common.Authorization = 'Bearer' + this.access_token;
 
 				this.$http.interceptors.push(function(request, next){
@@ -132,12 +158,10 @@ export default {
 		},
 		doSearch: function(searchText){
 			console.log('doSearch reached, searchText:', searchText);
-		   //$scope.searchSpotify('album', searchText);
-           //$scope.searchSpotify('artist', searchText);
            var albumORartist = 'album';
 
 
-		  this.$http.post('/api/searchSpotify',{albumORartist: albumORartist, query: searchText, offset: 0, limit: 20, access_token: this.access_token}).then(response => {
+		  this.$http.post('https://app6.vincelynch.com/api/searchSpotify',{albumORartist: albumORartist, query: searchText, offset: 0, limit: 20, access_token: this.access_token}).then(response => {
 		    // get body data
 		    //console.log('response', response.body)
 		    //this.someData = response.body;
@@ -147,7 +171,7 @@ export default {
 
 		  }, response => {
 		    // error callback
-		    console.log('response')
+		    console.log('error - response')
 		  });
         },
 
@@ -197,6 +221,13 @@ export default {
 			console.log("close modal called")
 			this.showModal = false;
 		},
+
+		authenticate: function (provider) {
+	      this.$auth.authenticate(provider).then(function () {
+	        // Execute application logic after successful social authentication
+
+	      })
+	    },
 
         testReq: function(){
         	console.log('just a testReq');
