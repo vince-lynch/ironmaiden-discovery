@@ -1,46 +1,101 @@
 
 <template>
   <div id="intro">
-  	
-	<!-- access_token: {{access_token}} -->
-	<input id="searchinput" type="text" class="form-control" v-model="searchText" placeholder="Search for..." />
-	<button id="searchSubmit" v-on:click="doSearch(searchText)" class="btn btn-primary">Search</button>
 
 
-   <div id="results" style="">
-   		<div v-if="musicListLoaded == false">
-	   		<div class="magnifying-glass" ></div>
-	   		<div id="search-results-text">
-     			<span >Your results will appear here</span>
-     		</div>
-     	</div>
-	    <div id="actualResults" v-if="musicListLoaded == true">
-			<ul class="grid">
-				<li v-for="album in musicList" class="album-card-block" v-on:click="openDetail(album)">
-					 <div class="image-container">
-					 	<img :src="album.images[0].url" class="main-image" /> 
-		           
-						<div class="view-more-detail" >
-
-			               <img src="/images/Bitmap@2x.png"/><br/>
-			                <em v-if="album.type == 'album'">View Tracks</em>
-			                <em v-if="album.type == 'artist'">View Albums</em>
-			             </div>
-
-			             <em v-if="album.type == 'album'" class="artistOrAlbum"><img src="/images/album-icon@2x.png" width="50px" height="50px"/> </em>
-			             <em v-if="album.type == 'artist'" class="artistOrAlbum"><img src="/images/artist-icon@2x.png" width="33px" height="30px" style="margin-top: 4px; margin-left: 4px;"/> </em>
-
-		           </div><!-- -->
-		           <div>
-            			<span>{{album.name}}</span>
-           			</div>
-
-				</li>
-			</ul>
-		</div>
+	  <div class="col-md-2 col-lg-2 col-sm-2 col-xs-2">
+		  <div class="iphone-wrapper">
+		    <!-- Search Bar --> 
+		      <div class="search-bar">
+		         <nav class="tab-bar">
+		      <section class="left-small">
+		        <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+		           </section>
+		        </nav>
+		    </div>
+		  <div class="search-canvas">
+		   <ul class="side-left-menu">
+		     <li class="active-item">
+		     <ul>
+		        <li class="voice-search">
+		          <input class="radius" type="text" class='form-control' placeholder="Type an Artist, Song, Lyrics"  id="searchinput" type="text"  v-model="searchText">
+		          <i class="fa fa-search"></i><a id="searchSubmit" v-on:click="doSearch(searchText)">Search</a>
+		       </li>
+		     </ul>
+		     <li><i class="fa fa-spotify"></i>Browse</li>
+		     <li><i class="fa fa-spotify"></i>Running</li>
+		     <li><i class="fa fa-spotify"></i>Activity</li>
+		     <li><i class="fa fa-spotify"></i>Radio</li>
+		     <li><i class="fa fa-spotify"></i>Your Music</li>
+		     <li><i class="fa fa-spotify"></i>Settings</li>
+		    </ul>
+		  </div>
+		  
+		  <div class="content-canvas">
+		    <ul class="search-results"> 
+		      <li class="list-header">
+		     
+		      </li>
+		      <ul>
+		  </div>
+		  
+		  </div>
 	</div>
+	<div class="col-md-10 col-lg-10 col-sm-10 col-xs-10">
+
+		<!-- access_token: {{access_token}} -->
+		<!-- <input placeholder="Search for..." />
+		 -->
 
 
+	   <div id="results" style="">
+	   		<div v-if="musicListLoaded == false">
+		   		<div class="magnifying-glass" ></div>
+		   		<div id="search-results-text">
+	     			<span >Your results will appear here</span>
+	     		</div>
+	     	</div>
+		    <div id="actualResults" v-if="musicListLoaded == true">
+				<ul class="grid">
+					<li v-for="album in musicList" class="album-card-block" v-on:click="openDetail(album)">
+						 <div class="image-container">
+						 	<img :src="album.images[0].url" class="main-image" /> 
+			           
+							<div class="view-more-detail" >
+
+				               <img src="/images/Bitmap@2x.png"/><br/>
+				                <em v-if="album.type == 'album'">View Tracks</em>
+				                <em v-if="album.type == 'artist'">View Albums</em>
+				             </div>
+
+				             <em v-if="album.type == 'album'" class="artistOrAlbum"><img src="/images/album-icon@2x.png" width="50px" height="50px"/> </em>
+				             <em v-if="album.type == 'artist'" class="artistOrAlbum"><img src="/images/artist-icon@2x.png" width="33px" height="30px" style="margin-top: 4px; margin-left: 4px;"/> </em>
+
+			           </div><!-- -->
+			           <div>
+	            			<span>{{album.name}}</span>
+	           			</div>
+
+					</li>
+				</ul>
+			</div>
+		</div>
+
+
+
+
+		
+
+	</div>
+  	
+	<div id="spotifyModal" v-if="spotifyModal == true" >
+		  <div id="white-Card">
+		  	<h1 style="color: black;">Login with Spotify</h1>
+			<a class="button button--social-login button--spotify" @click="authenticate('oauth2')"><i class="icon fa fa-spotify"></i>Login With Spotify</a>
+
+
+		  </div>
+	</div>
 	<div id="showModal" v-if="showModal == true" >
 		  <div id="white-Card">
 		   <img src="/images/Cross@2x.png" width="50px" height="50px"  style="position: absolute;right: 0px;z-index: 4" v-on:click="closeModal()">
@@ -72,16 +127,7 @@
 		   </div>
 		  </div>
 	</div>
-
-
-	<div id="spotifyModal" v-if="spotifyModal == true" >
-		  <div id="white-Card">
-		  	<h1 style="color: black;">Login with Spotify</h1>
-			<a class="button button--social-login button--spotify" @click="authenticate('oauth2')"><i class="icon fa fa-spotify"></i>Login With Spotify</a>
-
-
-		  </div>
-	</div>
+	
 
   </div>
 
