@@ -72,7 +72,7 @@
 				             <em v-if="album.type == 'artist'" class="artistOrAlbum"><img src="/images/artist-icon@2x.png" width="33px" height="30px" style="margin-top: 4px; margin-left: 4px;"/> </em>
 
 			           </div><!-- -->
-			           <div>
+			           <div style="overflow-y: hidden; height: 37px;">
 	            			<span>{{album.name}}</span>
 	           			</div>
 
@@ -89,19 +89,21 @@
 	</div>
   	
 	<div id="spotifyModal" v-if="spotifyModal == true" >
-		  <div id="white-Card">
+		<div id="white-Card">
 		  	<h1 style="color: black;">Login with Spotify</h1>
 			<a class="button button--social-login button--spotify" @click="authenticate('oauth2')"><i class="icon fa fa-spotify"></i>Login With Spotify</a>
 
 
-		  </div>
+		</div>
 	</div>
 	<div id="showModal" v-if="showModal == true" >
 		  <div id="white-Card">
 		   <img src="/images/Cross@2x.png" width="50px" height="50px"  style="position: absolute;right: 0px;z-index: 4" v-on:click="closeModal()">
-		    <div style="background: #383a49;"><div  class="show-image" :style="{'background': 'url(' + selectedAlbum.images[0].url +')'}">
-		    </div>
-		     <span class="show-header-text">{{selectedAlbum.name}}</span>
+		    <div style="background: #383a49;">
+
+			    <div  class="show-image" :style="{'background': 'url(' + selectedAlbum.images[0].url +')'}">
+			    </div>
+			     <span class="show-header-text">{{selectedAlbum.name}}</span>
 		    </div>
 
 		   <div class="container" v-if="selectedAlbum.type == 'artist'">

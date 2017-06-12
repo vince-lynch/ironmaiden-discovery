@@ -143,6 +143,9 @@ exports.spotifyAuth = function(req, res) {
             if (session) {
               session.sessionId            = req.sessionID;
               session.spotify_access_token = access_token;
+                session.save(function(err) {
+                  // save the session
+                });
             } else {
                 session = new Session({
                   sessionId: req.sessionID,
