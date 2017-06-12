@@ -63,8 +63,9 @@
 		     <span style="font-size: 23px;color:  #383a49;">Tracks</span>
 		     <hr/>
 		     <ul>
-		       <li v-for="track in foundTracks"  style="list-style-type: none; padding-bottom: 19px;" ><!-- ng-if="$index < 4" -->
-		         <span style="font-size: 22px; color: black; font-weight: 600;">{{track.name}}</span><br/>
+		       <li v-for="track in foundTracks"  style="list-style-type: none; padding-bottom: 19px;" ><!-- ng-if="$index < 4" -->  
+
+		         <i class="fa fa-play-circle-o" aria-hidden="true" style="font-size: 40px"  v-on:click="playAudio(track.preview_url)"></i> <span style="font-size: 22px; color: black; font-weight: 600;">{{track.name}}</span><br/>
 		         <span style="font-size: 16px; color: grey;">{{((track.duration_ms / 1000) / 60).toFixed(2)}} minutes</span>
 		       </li>
 		     </ul>
@@ -101,7 +102,9 @@ export default {
 		  selectedAlbum: this.selectedAlbum,
 		  showModal: this.showModal,
 		  foundTracks: this.foundTracks,
-		  spotifyModal: this.spotifyModal
+		  spotifyModal: this.spotifyModal,
+		  totalSteps: 6,
+		  completedSteps: 3
 		}
 	},
 	mounted() {
@@ -111,6 +114,7 @@ export default {
 	  this.showModal 	   = false;
 	  this.foundTracks     = [];
 	  this.spotifyModal    = false;
+	  this.audioObject     = '';
 	  // When the application loads, we want to call the method that initializes
 	  // some data
 	  //return 
@@ -135,20 +139,21 @@ export default {
 					window.access_token = this.access_token;
 				}
 			} else {
-				console.log('reached else');
-				this.spotifyModal = false;
+				window.close();
+				// console.log('reached else');
+				// this.spotifyModal = false;
 
-				this.access_token = window.location.href.split('access_token=')[1];
-				window.access_token = this.access_token; // for karma-testing
+				// this.access_token = window.location.href.split('access_token=')[1];
+				// window.access_token = this.access_token; // for karma-testing
 
-				console.log('saved access token', this.access_token);
-				this.$http.headers.common.Authorization = 'Bearer' + this.access_token;
+				// console.log('saved access token', this.access_token);
+				// this.$http.headers.common.Authorization = 'Bearer' + this.access_token;
 
-				this.$http.interceptors.push(function(request, next){
-					request.method = 'POST';
+				// this.$http.interceptors.push(function(request, next){
+				// 	request.method = 'POST';
 
-					request.headers.set('authorization', 'Bearer ' + this.access_token);
-				})
+				// 	request.headers.set('authorization', 'Bearer ' + this.access_token);
+				// })
 			}
 
 		},
@@ -216,6 +221,15 @@ export default {
 			}
 
 		},
+		playAudio: function(previewUrl){
+			console.log('reached playAudio, previewUrl:', previewUrl);
+			if (this.audioObject) {
+                this.audioObject.pause();
+            }
+			this.audioObject = new Audio(previewUrl);
+            this.audioObject.play();
+
+		},
 
 		closeModal: function(){
 			console.log("close modal called")
@@ -223,9 +237,10 @@ export default {
 		},
 
 		authenticate: function (provider) {
+		  this.spotifyModal = false;
 	      this.$auth.authenticate(provider).then(function () {
 	        // Execute application logic after successful social authentication
-
+	        this.spotifyModal = false;
 	      })
 	    },
 

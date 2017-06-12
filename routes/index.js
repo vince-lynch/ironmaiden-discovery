@@ -3,33 +3,32 @@ express              = require('express'),
 router               = express.Router();
 
 // Models
-var User = require('../models/User');
-
+var Session = require('../models/Sessions');
 // Controllers
 var spotifyController = require('../controllers/spotify');
 
 
 
-router.use(function(req, res, next) {
-  req.isAuthenticated = function() {
-    var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
-    try {
-      return jwt.verify(token, process.env.TOKEN_SECRET);
-    } catch (err) {
-      return false;
-    }
-  };
+var getAccessToken =function(req, res, next) {
+  //req. = function() {
+    Session.findOne({ sessionId: req.sessionID }, function(err, session) {
+      if(session){
+        console.log('mongoose - found session', session);
+        req.accessToken = session.spotify_access_token;
+        next();
+      } else {
+        console.log('mongoose - couldnt find session');
+        next();
+      }
+    })
+  //};
+};
 
-  if (req.isAuthenticated()) {
-    var payload = req.isAuthenticated();
-    User.findById(payload.sub, function(err, user) {
-      req.user = user;
-      next();
-    });
-  } else {
-    next();
-  }
-});
+
+
+
+
+
 
 router.get('/api/test', function(req,res){
   res.json({test: 'Hello Vuejs'});
@@ -42,9 +41,9 @@ router.get('/auth/check', function(req, res){
   console.log("req.headers:",req.headers);
 })
 
-router.post('/api/searchSpotify', spotifyController.searchSpotify);
-router.post('/api/getAlbums'    , spotifyController.getAlbums);
-router.post('/api/getTracks'    , spotifyController.getTracks)
+router.post('/api/searchSpotify',getAccessToken, spotifyController.searchSpotify);
+router.post('/api/getAlbums'    ,getAccessToken, spotifyController.getAlbums);
+router.post('/api/getTracks'    ,getAccessToken, spotifyController.getTracks)
 
 
 

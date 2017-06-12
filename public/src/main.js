@@ -6,6 +6,8 @@ import Vue from 'vue';
 
 var VueAuthenticate = require('vue-authenticate');
 import VueResource from 'vue-resource'
+
+
 Vue.use(VueResource)
 
 Vue.use(VueAuthenticate, {

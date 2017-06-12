@@ -2,6 +2,8 @@ var stateKey = 'spotify_auth_state';
 var querystring = require('querystring');
 var request     = require('request');
 
+var Session = require('../models/Sessions');
+
 var client_id = "caec1db59c614765bb0a7009122d1c17";
 var client_secret = "239ca3f34d574d2c99d9d1e2c60dff26";
 var redirect_uri = "https://app6.vincelynch.com/auth/spotify";
@@ -11,8 +13,8 @@ var redirect_uri = "https://app6.vincelynch.com/auth/spotify";
 
 exports.searchSpotify = function(req, res){
 
-    console.log("req.body.access_token", req.body.access_token);
-    var access_token  = req.body.access_token;//req.headers.authorization.split("Bearer ")[1];
+    console.log("searchSpotify(), access_token", req.accessToken);
+    var access_token  = req.accessToken;
 
     var albumORartist = req.body.albumORartist;
     var query         = req.body.query;
@@ -42,9 +44,7 @@ exports.searchSpotify = function(req, res){
 exports.getAlbums = function(req, res){
     console.log("reached getAlbums")
     var album = req.body.album;
-
-    console.log("req.body.access_token", req.body.access_token);
-    var access_token  = req.body.access_token;//req.headers.authorization.split("Bearer ")[1];
+    var access_token  = req.accessToken;
 
     var options = {
       url: 'https://api.spotify.com/v1/search?q=' + album.name + '&type=' + "album",
@@ -64,9 +64,7 @@ exports.getAlbums = function(req, res){
 exports.getTracks = function(req, res){
     var albumId = req.body.albumId;
     console.log("reached getTracks for AlbumId:", albumId)
-
-    //console.log("req.body.access_token", req.body.access_token);
-    var access_token  = req.body.access_token;//req.headers.authorization.split("Bearer ")[1];
+    var access_token  = req.accessToken;
 
 
     var options = {
@@ -94,6 +92,8 @@ exports.spotifyAuth = function(req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
+  var sid = req.sessionID;
+  console.log('sessionId', sid);
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -134,6 +134,24 @@ exports.spotifyAuth = function(req, res) {
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
+        });
+
+
+        // save the access_token against the user session;
+
+        Session.findOne({ sessionId: req.sessionID }, function(err, session) {
+            if (session) {
+              session.sessionId            = req.sessionID;
+              session.spotify_access_token = access_token;
+            } else {
+                session = new Session({
+                  sessionId: req.sessionID,
+                  spotify_access_token: access_token
+                });
+                session.save(function(err) {
+                  // save the session
+                });
+            }
         });
 
         // we can also pass the token to the browser to make requests from there

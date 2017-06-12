@@ -9,6 +9,7 @@ var dotenv = require('dotenv').config({silent: true});
 var routes  = require('./routes');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
+var session = require('express-session')
 var moment = require('moment');
 var request = require('request');
 
@@ -19,7 +20,7 @@ var request = require('request');
 var app = express();
 
 
-mongoose.connect('mongodb://localhost/spotifyeverywhere');
+mongoose.connect('mongodb://localhost/iron-maiden');
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
@@ -31,21 +32,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 app.use(cookieParser());
+app.use(session({
+    secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-
-//create a cors middleware
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
-
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../public')));
 app.use('/', routes);
 
 

@@ -1,16 +1,24 @@
 <template>
-  <div id="app">
-    <hello></hello>
-  </div>
+  <radial-progress-bar :diameter="200"
+                       :completed-steps="completedSteps"
+                       :total-steps="totalSteps">
+   <p>Total steps: {{ totalSteps }}</p>
+   <p>Completed steps: {{ completedSteps }}</p>
+  </radial-progress-bar>
 </template>
-
+ 
 <script>
-import Hello from './components/Hello.vue'
-
+import RadialProgressBar from 'vue-radial-progress';
+ 
 export default {
-  name: 'app',
+  data () {
+    return {
+      completedSteps: 0,
+      totalSteps: 10
+    }
+  },
+ 
   components: {
-    Hello
+    RadialProgressBar
   }
 }
-</script>
